@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jlox", "jlox\jlox.csproj", "{8581F26E-CC0D-4DA6-BCD9-1B01A1ED693B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cslox", "cslox\cslox.csproj", "{8581F26E-CC0D-4DA6-BCD9-1B01A1ED693B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

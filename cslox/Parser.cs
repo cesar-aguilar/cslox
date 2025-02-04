@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static jlox.TokenType;
+using static cslox.TokenType;
 
-namespace jlox
+namespace cslox
 {
 	internal class Parser
 	{

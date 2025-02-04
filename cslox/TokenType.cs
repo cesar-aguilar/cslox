@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace jlox
+namespace cslox
 {
 	public enum TokenType
 	{

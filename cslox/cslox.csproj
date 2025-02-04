@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{8581F26E-CC0D-4DA6-BCD9-1B01A1ED693B}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>jlox</RootNamespace>
-    <AssemblyName>jlox</AssemblyName>
+    <RootNamespace>cslox</RootNamespace>
+    <AssemblyName>cslox</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

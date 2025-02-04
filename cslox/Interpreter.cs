@@ -5,7 +5,7 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace jlox
+namespace cslox
 {
 	// Interpreter class implements the visitor pattern
 	internal class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace jlox
+namespace cslox
 {
 	// AstPrinter implements the visitor pattern to print the AST
 	internal class AstPrinter : Expr.IVisitor<string>
