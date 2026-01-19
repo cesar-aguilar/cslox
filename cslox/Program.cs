@@ -54,7 +54,7 @@ namespace cslox
 			Console.WriteLine("To exit, type Ctrl-X and ENTER.\n");
 
 			for (; ; )
-			{
+			{				
 				Console.Write("> ");
 				string line = Console.ReadLine();
 
@@ -75,6 +75,11 @@ namespace cslox
 			Scanner scanner = new Scanner(source);
 			List<Token> tokens = scanner.ScanTokens();
 
+			//foreach (Token token in tokens)
+			//{
+			//	Console.WriteLine(token);
+			//}
+
 			Parser parser = new Parser(tokens);
 
 			List<Stmt> Statements = parser.Parse();
@@ -82,16 +87,9 @@ namespace cslox
 			if (hadError) return;
 
 			interpreter.Interpret(Statements);
-
-			//Console.WriteLine(new AstPrinter().Print(expression));
-
-			//foreach (Token token in tokens)
-			//{
-			//	Console.WriteLine(token);
-			//}
-
+			
 		}
-		
+
 		public static void Error(int line, string message)
 		{
 			Report(line, "", message);

@@ -11,6 +11,9 @@ namespace cslox
 	internal class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor
 	{
 
+		private LoxEnvironment environment = new LoxEnvironment();
+
+		
 		public void Interpret(List<Stmt> Statements)
 		{
 			try
@@ -27,12 +30,32 @@ namespace cslox
 		
 		}
 
-		public Object VisitLiteralExpr(Expr.Literal expr)
+    // ==============================================
+    // Visitor methods for expressions
+    // ==============================================
+
+    public Object VisitLiteralExpr(Expr.Literal expr)
 		{
 			return expr.Value;
 		}
 
-		public Object VisitGroupingExpr(Expr.Grouping expr)
+		public Object VisitLogicalExpr(Expr.Logical expr)
+		{
+			Object left = evaluate(expr.Left);
+			
+			if (expr.Operator.type == TokenType.OR)
+			{
+				return isTruthy(left);
+      } else
+			{
+				if (!isTruthy(left)) return false;
+      }
+
+			return isTruthy(evaluate(expr.Right));
+		
+		}
+
+    public Object VisitGroupingExpr(Expr.Grouping expr)
 		{
 			return evaluate(expr.Expression);
 		}
@@ -116,7 +139,42 @@ namespace cslox
 
 		}
 
-		public void VisitExpressionStmt(Stmt.Expression stmt)
+    public Object VisitVariableExpr(Expr.Variable expr)
+    {
+      return environment.Get(expr.Name);
+    }
+
+    public Object VisitAssignExpr(Expr.Assign expr)
+		{
+			Object value = evaluate(expr.Value);
+      environment.Assign(expr.Name, value);
+			return value;
+
+    }
+
+		public Object VisitCallExpr(Expr.Call expr)
+		{
+
+			Object callee = evaluate(expr.Callee);
+
+      List<Object> arguments = new List<Object>();
+
+			foreach (Expr argument in expr.Arguments)
+			{
+				arguments.Add(evaluate(argument));
+			}
+
+			ILoxCallable function = (ILoxCallable)callee;
+
+			return function.Call(this, arguments);
+
+    }
+
+    // ==============================================
+    // Visitor methods for statements
+    // ==============================================
+
+    public void VisitExpressionStmt(Stmt.Expression stmt)
 		{
 			evaluate(stmt.expression);
 		}
@@ -127,7 +185,52 @@ namespace cslox
 			Console.WriteLine(Stringify(value));
 		}
 
-		private Object evaluate(Expr expr)
+		public void VisitVarStmt(Stmt.Var stmt)
+		{
+			Object value = null;
+			if (stmt.initializer != null)
+			{
+				value = evaluate(stmt.initializer);
+			}
+
+			environment.Define(stmt.name.lexeme, value);
+		}
+	
+		public void VisitBlockStmt(Stmt.Block stmt)
+		{
+			ExecuteBlock(stmt.statements, new LoxEnvironment(environment));
+			return;
+    }
+
+		public void VisitIfStmt(Stmt.If stmt)
+    {
+      if (isTruthy(evaluate(stmt.condition)))
+      {
+        execute(stmt.thenBranch);
+      }
+      else if (stmt.elseBranch != null)
+      {
+        execute(stmt.elseBranch);
+      }
+
+			return;
+    }
+
+		public void VisitWhileStmt(Stmt.While stmt)
+		{
+			while (isTruthy(evaluate(stmt.condition)))
+			{
+				execute(stmt.body);
+			}
+
+			return;
+		}
+
+    // ==============================================
+    // Helper methods
+    // ==============================================
+
+    private Object evaluate(Expr expr)
 		{
 			return expr.Accept(this);
 		}
@@ -137,7 +240,26 @@ namespace cslox
 			stmt.Accept(this);
 		}
 
-		private bool isTruthy(Object obj)
+		private void ExecuteBlock(List<Stmt> statements, LoxEnvironment env)
+    {
+      LoxEnvironment previous = this.environment;
+
+      try
+      {
+        this.environment = env;
+
+        foreach (Stmt statement in statements)
+        {
+          execute(statement);
+        }
+      }
+      finally
+      {
+        this.environment = previous;
+      }
+    }
+
+    private bool isTruthy(Object obj)
 		{
 			if (obj == null) return false;
 			if (obj is bool) return (bool)obj;

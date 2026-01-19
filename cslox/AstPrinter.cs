@@ -40,8 +40,26 @@ namespace cslox
 			return Parenthesize(expr.Operator.lexeme, expr.Right);
 		}
 
-		// Helper method to parenthesize the expression
-		private string Parenthesize(string name, params Expr[] exprs)
+		// Visit Variable expression
+		public string VisitVariableExpr(Expr.Variable expr)
+		{
+			return expr.Name.lexeme;
+		}
+
+    // Visit Assign expression
+    public string VisitAssignExpr(Expr.Assign expr)
+    {
+      return Parenthesize("assign " + expr.Name.lexeme, expr.Value);
+    }
+
+		// Visit Logical expression
+		public string VisitLogicalExpr(Expr.Logical expr)
+		{
+			return Parenthesize(expr.Operator.lexeme, expr.Left, expr.Right);
+    }
+
+    // Helper method to parenthesize the expression
+    private string Parenthesize(string name, params Expr[] exprs)
 		{
 			StringBuilder builder = new StringBuilder();
 
