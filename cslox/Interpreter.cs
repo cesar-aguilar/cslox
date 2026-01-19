@@ -11,11 +11,23 @@ namespace cslox
 	internal class Interpreter : Expr.IVisitor<Object>, Stmt.IVisitor
 	{
 
-		private LoxEnvironment environment = new LoxEnvironment();
+		private LoxEnvironment globals = new LoxEnvironment();
+		private LoxEnvironment environment;
 
 		
-		public void Interpret(List<Stmt> Statements)
+		public Interpreter()
+    {
+      
+      // Define native functions here, e.g., clock
+      globals.Define("clock", new NativeLoxCallables.Clock());
+
+      environment = globals;
+
+    }
+
+    public void Interpret(List<Stmt> Statements)
 		{
+			
 			try
 			{
 				foreach (Stmt statement in Statements)
@@ -164,9 +176,19 @@ namespace cslox
 				arguments.Add(evaluate(argument));
 			}
 
-			ILoxCallable function = (ILoxCallable)callee;
+      if (!(callee is ILoxCallable))
+      {
+        throw new RunTimeError(expr.Paren, "Can only call functions and classes.");
+      }
 
-			return function.Call(this, arguments);
+      ILoxCallable function = (ILoxCallable)callee;
+
+			if (arguments.Count() != function.Arity())
+      {
+        throw new RunTimeError(expr.Paren, "Expected " + function.Arity() + " arguments but got " + arguments.Count() + ".");
+      }
+
+      return function.Call(this, arguments);
 
     }
 
